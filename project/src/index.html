@@ -237,16 +237,13 @@
 
       <!-- API Keys Section -->
       <h3 style="margin-top: 25px; margin-bottom: 15px; color: #333; font-size: 16px; font-weight: 600;">🎉 Free API</h3>
-      <p style="margin: 5px 0 15px 0; color: #27ae60; font-size: 12px; font-weight: 500;">Using a free API key for OpenAI. Get started immediately!</p>
-
-      <!-- TEMPORARY FREE API KEY -->
-      <!-- <label for="welcomeApiKeyInput"
+      <label for="welcomeApiKeyInput"
         style="display: block; margin-bottom: 10px; color: #666; font-size: 14px; font-weight: 500;">OpenAI API
-        Key:</label>
+        Key (required):</label>
       <input type="password" id="welcomeApiKeyInput"
         style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; box-sizing: border-box; margin-bottom: 5px;"
         placeholder="sk-...">
-      <p style="margin: 5px 0 20px 0; color: #999; font-size: 12px;">For AI-powered features and code generation.</p> -->
+      <p style="margin: 5px 0 20px 0; color: #999; font-size: 12px;">For AI-powered features and code generation.</p>
 
       <label for="welcomeHfKeyInput"
         style="display: block; margin-bottom: 10px; color: #666; font-size: 14px; font-weight: 500;">Hugging Face API
@@ -279,7 +276,12 @@
     <div
       style="background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
       <h2 style="margin-top: 0; margin-bottom: 20px; color: #333;">API Keys</h2>
-      <p style="margin: 0 0 20px 0; color: #27ae60; font-size: 12px; font-weight: 500;">🎉 Using a free OpenAI API key. Only Hugging Face key needed below if deploying.</p>
+      <label for="apiKeyInput"
+        style="display: block; margin-bottom: 10px; color: #666; font-size: 14px; font-weight: 500;">OpenAI API Key (required):</label>
+      <input type="password" id="apiKeyInput"
+        style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; box-sizing: border-box; margin-bottom: 5px;"
+        placeholder="sk-...">
+      <p style="margin: 5px 0 20px 0; color: #999; font-size: 12px;">For AI-powered features and code generation.</p>
 
       <label for="hfKeyInput"
         style="display: block; margin-bottom: 10px; color: #666; font-size: 14px; font-weight: 500;">Hugging Face API Key (suggested):</label>

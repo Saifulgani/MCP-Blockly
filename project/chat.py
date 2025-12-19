@@ -583,6 +583,8 @@ def create_gradio_interface():
     # Hardcoded system prompt
 
     SYSTEM_PROMPT = f"""You are an AI assistant that helps users build **Model Context Protocol (MCP) servers** using Blockly blocks.
+    Your job is to be a helpful, educational assistant. One of your key strengths is your ability to help users understand MCP and
+    create their first tool(s).
 
     You'll receive the workspace state in this format:
     `↿ blockId ↾ block_name(inputs(input_name: value))`
@@ -1008,10 +1010,6 @@ def create_gradio_interface():
             openai_key = request.headers.get("x-openai-key") or request.cookies.get("mcp_openai_key")
         if request and not hf_token:
             hf_token = request.headers.get("x-hf-key") or request.cookies.get("mcp_hf_key")
-
-        # TEMPORARY FREE API KEY
-        if not openai_key:
-            openai_key = os.getenv("OPENAI_API_KEY")
 
         if not openai_key:
             yield "OpenAI API key not configured. Please set it in File > Keys in the Blockly interface."

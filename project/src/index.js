@@ -183,7 +183,7 @@ downloadCodeButton.addEventListener("click", () => {
 // Settings button and Keys Modal
 const settingsButton = document.querySelector('#settingsButton');
 const apiKeyModal = document.querySelector('#apiKeyModal');
-// const apiKeyInput = document.querySelector('#apiKeyInput');  // TEMP: No OpenAI key input field
+const apiKeyInput = document.querySelector('#apiKeyInput');
 const hfKeyInput = document.querySelector('#hfKeyInput');
 const saveApiKeyButton = document.querySelector('#saveApiKey');
 const cancelApiKeyButton = document.querySelector('#cancelApiKey');
@@ -194,7 +194,9 @@ const HF_KEY_STORAGE = "mcp_blockly_hf_key";
 const loadStoredKeys = () => {
   const storedOpenAI = window.localStorage.getItem(OPENAI_KEY_STORAGE) || "";
   const storedHF = window.localStorage.getItem(HF_KEY_STORAGE) || "";
-  // apiKeyInput.value = storedOpenAI;  // TEMP: No OpenAI key input field
+  if (apiKeyInput) {
+    apiKeyInput.value = storedOpenAI;
+  }
   if (hfKeyInput) {
     hfKeyInput.value = storedHF;
   }
@@ -210,13 +212,12 @@ settingsButton.addEventListener("click", () => {
 });
 
 saveApiKeyButton.addEventListener("click", () => {
-  // const apiKey = apiKeyInput.value.trim();  // TEMP: No OpenAI key input field
-  const apiKey = "";  // TEMP: Using free API key, OpenAI field disabled
+  const apiKey = apiKeyInput?.value.trim() || "";
   const hfKey = hfKeyInput?.value.trim() || "";
 
-  // Validate OpenAI key format if provided
-  if (apiKey && (!apiKey.startsWith("sk-") || apiKey.length < 40)) {
-    alert("Invalid OpenAI API key format. Please enter a valid OpenAI API key (starts with 'sk-').");
+  // Validate OpenAI key format (required)
+  if (!apiKey || !apiKey.startsWith("sk-") || apiKey.length < 40) {
+    alert("OpenAI API key is required. Please enter a valid OpenAI API key (starts with 'sk-').");
     return;
   }
 
@@ -253,8 +254,7 @@ cancelApiKeyButton.addEventListener("click", () => {
 
 // Welcome Modal Setup
 const welcomeModal = document.querySelector('#welcomeModal');
-// TEMPORARY FREE API KEY - welcomeApiKeyInput removed from DOM
-// const welcomeApiKeyInput = document.querySelector('#welcomeApiKeyInput');
+const welcomeApiKeyInput = document.querySelector('#welcomeApiKeyInput');
 const welcomeHfKeyInput = document.querySelector('#welcomeHfKeyInput');
 const saveWelcomeApiKeyButton = document.querySelector('#saveWelcomeApiKey');
 const skipTutorialButton = document.querySelector('#skipTutorialButton');
@@ -270,11 +270,9 @@ const getCookieValue = (name) => {
 };
 
 const loadWelcomeStoredKeys = () => {
-  // TEMPORARY FREE API KEY
-  // const storedOpenAI = window.localStorage.getItem(OPENAI_KEY_STORAGE) || "";
+  const storedOpenAI = window.localStorage.getItem(OPENAI_KEY_STORAGE) || "";
   const storedHF = window.localStorage.getItem(HF_KEY_STORAGE) || "";
-  // TEMPORARY FREE API KEY - welcomeApiKeyInput removed from DOM
-  // welcomeApiKeyInput.value = storedOpenAI;
+  welcomeApiKeyInput.value = storedOpenAI;
   welcomeHfKeyInput.value = storedHF;
 };
 
@@ -294,42 +292,43 @@ const hideWelcomeModal = () => {
   }
 };
 
-saveWelcomeApiKeyButton.addEventListener("click", () => {
-  // TEMPORARY FREE API KEY
-  // const apiKey = welcomeApiKeyInput.value.trim();
-  const apiKey = ""; // TEMPORARY FREE API KEY - using free API
+// Helper function to save welcome modal keys
+const saveWelcomeKeys = (requireValidation = true) => {
+  const apiKey = welcomeApiKeyInput.value.trim();
   const hfKey = welcomeHfKeyInput.value.trim();
 
-  // TEMPORARY FREE API KEY
-  // // Validate OpenAI key format if provided
-  // if (apiKey && (!apiKey.startsWith("sk-") || apiKey.length < 40)) {
-  //   alert("Invalid OpenAI API key format. Please enter a valid OpenAI API key (starts with 'sk-').");
-  //   return;
-  // }
+  // Validate OpenAI key format (required if requireValidation is true)
+  if (requireValidation && (!apiKey || !apiKey.startsWith("sk-") || apiKey.length < 40)) {
+    alert("OpenAI API key is required. Please enter a valid OpenAI API key (starts with 'sk-').");
+    return false;
+  }
 
   // Validate Hugging Face key format if provided
   if (hfKey && (!hfKey.startsWith("hf_") || hfKey.length < 20)) {
     alert("Invalid Hugging Face API key format. Please enter a valid Hugging Face API key (starts with 'hf_').");
-    return;
+    return false;
   }
 
-  // Save API keys locally
-  window.localStorage.setItem(OPENAI_KEY_STORAGE, apiKey);
-  window.localStorage.setItem(HF_KEY_STORAGE, hfKey);
+  // Save API keys locally if apiKey is provided
+  if (apiKey) {
+    console.log("[Welcome] Saving keys to localStorage");
+    window.localStorage.setItem(OPENAI_KEY_STORAGE, apiKey);
+    window.localStorage.setItem(HF_KEY_STORAGE, hfKey);
 
-  // Share keys with backend via cookies (per-request, not stored server-side)
-  const cookieOpts = "path=/; SameSite=None; Secure";
-  // TEMPORARY FREE API KEY
-  // if (apiKey) {
-  //   document.cookie = `mcp_openai_key=${encodeURIComponent(apiKey)}; ${cookieOpts}`;
-  // } else {
-  //   document.cookie = `mcp_openai_key=; Max-Age=0; ${cookieOpts}`;
-  // }
-  document.cookie = `mcp_openai_key=; Max-Age=0; ${cookieOpts}`; // TEMPORARY FREE API KEY - clear free API cookie
-  if (hfKey) {
-    document.cookie = `mcp_hf_key=${encodeURIComponent(hfKey)}; ${cookieOpts}`;
-  } else {
-    document.cookie = `mcp_hf_key=; Max-Age=0; ${cookieOpts}`;
+    // Share keys with backend via cookies (per-request, not stored server-side)
+    const cookieOpts = "path=/; SameSite=None; Secure";
+    document.cookie = `mcp_openai_key=${encodeURIComponent(apiKey)}; ${cookieOpts}`;
+    if (hfKey) {
+      document.cookie = `mcp_hf_key=${encodeURIComponent(hfKey)}; ${cookieOpts}`;
+    }
+  }
+  
+  return true;
+};
+
+saveWelcomeApiKeyButton.addEventListener("click", () => {
+  if (!saveWelcomeKeys(true)) {
+    return;
   }
 
   hideWelcomeModal();
@@ -342,6 +341,9 @@ saveWelcomeApiKeyButton.addEventListener("click", () => {
 });
 
 skipTutorialButton.addEventListener("click", () => {
+  // Save keys even if skipping tutorial (no validation required)
+  saveWelcomeKeys(false);
+  
   tutorialEnabled = false;
   hideWelcomeModal();
 });

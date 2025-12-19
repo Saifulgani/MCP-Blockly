@@ -394,10 +394,6 @@ def build_interface():
                 openai_key = request.headers.get("x-openai-key") or request.cookies.get("mcp_openai_key")
                 hf_key = request.headers.get("x-hf-key") or request.cookies.get("mcp_hf_key")
 
-            # TEMPORARY FREE API KEY
-            if not openai_key:
-                openai_key = os.getenv("OPENAI_API_KEY")
-
             result = execute_blockly_logic(inputs, session_id, openai_key=openai_key, hf_key=hf_key)
 
             # Get output types to determine how to format the result

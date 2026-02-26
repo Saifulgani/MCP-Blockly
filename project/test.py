@@ -214,7 +214,7 @@ def build_interface():
         with gr.Accordion("MCP Inputs", open=True):
             for i in range(10):
                 # Create inputs that can be shown/hidden
-                txt = gr.Textbox(label=f"Input {i+1}", visible=False)
+                txt = gr.Textbox(label=f"Input {i+1}", visible="hidden")
                 input_fields.append(txt)
                 input_group_items.append(txt)
 
@@ -222,7 +222,7 @@ def build_interface():
         
         with gr.Accordion("MCP Outputs", open=True):
             for i in range(10):
-                out = gr.Textbox(label=f"Output {i+1}", visible=False, interactive=False)
+                out = gr.Textbox(label=f"Output {i+1}", visible="hidden", interactive=False)
                 output_fields.append(out)
         
         with gr.Row():
@@ -304,9 +304,9 @@ def build_interface():
             output_updates = []
             for i, field in enumerate(output_fields):
                 if i < out_amt:
-                    output_updates.append(gr.update(visible=True, label=f"{out_names[i]} ({out_types[i]})", value=""))
+                    output_updates.append(gr.Textbox(visible=True, label=f"{out_names[i]} ({out_types[i]})", value=""))
                 else:
-                    output_updates.append(gr.update(visible=False, value=""))
+                    output_updates.append(gr.Textbox(visible="hidden", value=""))
 
             # Update visibility + clear input fields
             updates = []
@@ -317,13 +317,13 @@ def build_interface():
                     if param["type"] == "list":
                         note = "- (use like: [\"a\", \"b\", ...])"
 
-                    updates.append(gr.update(
+                    updates.append(gr.Textbox(
                         visible=True,
                         label=f"{param['name']} ({param['type']}) {note}",
                         value=""
                     ))
                 else:
-                    updates.append(gr.update(visible=False, value=""))
+                    updates.append(gr.Textbox(visible="hidden", value=""))
 
             return updates + output_updates
 

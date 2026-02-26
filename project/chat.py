@@ -936,11 +936,19 @@ def create_gradio_interface():
         global latest_blockly_vars
         vars = latest_blockly_vars
         
-        # Convert history to OpenAI format
+        # Convert history to OpenAI format (Gradio 6 uses message dicts)
         input_items = []
-        for human, ai in history:
-            input_items.append({"role": "user", "content": human})
-            input_items.append({"role": "assistant", "content": ai})
+        for msg in history:
+            # Extract plain text content (Gradio 6 may provide structured content)
+            content = msg["content"]
+            if isinstance(content, list):
+                content = "".join(
+                    part.get("text", "") if isinstance(part, dict) else str(part)
+                    for part in content
+                )
+            elif not isinstance(content, str):
+                content = str(content)
+            input_items.append({"role": msg["role"], "content": content})
         
         # Build instructions
         instructions = SYSTEM_PROMPT
